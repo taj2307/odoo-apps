@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="action_partner_merge" model="ir.actions.server">
+            <field name="name">Merge</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_type">action</field>
+            <field name="groups_id" eval="[(4, ref('taj_partner_merge.group_partner_merge_user'))]"/>
+            <field name="state">code</field>
+            <field name="code">
+merge_group = env.ref('taj_partner_merge.group_partner_merge_user')
+if merge_group not in env.user.groups_id:
+    raise UserError('You do not have permission to merge partners. Contact your administrator.')
+
+if records and len(records) >= 2:
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Merge Partners',
+        'res_model': 'partner.merge.check.wizard',
+        'view_mode': 'form',
+        'target': 'new',
+        'context': {
+            'active_ids': records.ids,
+            'active_model': 'res.partner',
+        }
+    }
+elif records and len(records) == 1:
+    raise UserError('Please select at least 2 partners to merge.')
+else:
+    raise UserError('No partners selected.')
+            </field>
+        </record>
+
+    </data>
+</odoo>

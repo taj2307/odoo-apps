@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_merge_check_wizard_merge_user,partner.merge.check.wizard (Merge User),model_partner_merge_check_wizard,taj_partner_merge.group_partner_merge_user,1,1,1,1

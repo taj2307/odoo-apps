@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_merge_check_form" model="ir.ui.view">
+        <field name="name">partner.merge.check.wizard.form</field>
+        <field name="model">partner.merge.check.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Merge Partners - Pre-Check">
+
+                <!-- BLOCKED: Draft invoices found -->
+                <div invisible="not has_draft_invoices"
+                     style="background-color:#fff3cd; border:1px solid #ffc107;
+                            border-radius:6px; padding:12px; margin-bottom:12px;">
+                    <h4 style="color:#856404; margin:0 0 6px 0;">
+                        ⚠️ Merge Blocked: Draft Invoices Detected
+                    </h4>
+                    <field name="warning_message" readonly="1"
+                           style="color:#856404; white-space:pre-wrap;"/>
+                    <separator/>
+                    <b style="color:#856404;">Affected Invoices:</b>
+                    <field name="draft_invoice_details" readonly="1"
+                           style="color:#856404; white-space:pre-wrap; font-family:monospace;"/>
+                </div>
+
+                <!-- CLEAR: Safe to merge -->
+                <div invisible="has_draft_invoices"
+                     style="background-color:#d4edda; border:1px solid #28a745;
+                            border-radius:6px; padding:12px; margin-bottom:12px;">
+                    <h4 style="color:#155724; margin:0 0 6px 0;">
+                        ✅ Ready to Merge
+                    </h4>
+                    <field name="warning_message" readonly="1"
+                           style="color:#155724; white-space:pre-wrap;"/>
+                </div>
+
+                <separator string="Partners Selected"/>
+                <field name="partner_ids"
+                       readonly="1"
+                       widget="many2many_tags"/>
+
+                <footer>
+                    <!-- Blocked: only Close -->
+                    <button invisible="not has_draft_invoices"
+                            string="Close"
+                            special="cancel"
+                            class="btn-secondary"/>
+
+                    <!-- Safe: Proceed + Cancel -->
+                    <button invisible="has_draft_invoices"
+                            name="action_proceed_to_merge"
+                            string="Proceed to Merge →"
+                            type="object"
+                            class="btn-primary"/>
+                    <button invisible="has_draft_invoices"
+                            string="Cancel"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+
+            </form>
+        </field>
+    </record>
+
+</odoo>
