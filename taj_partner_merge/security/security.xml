@@ -6,6 +6,9 @@
         <record id="group_partner_merge_user" model="res.groups">
             <field name="name">Can Merge Partners</field>
             <field name="comment">Users in this group can merge duplicate partners/customers.</field>
+            <!-- Merging runs Odoo's merge wizard, which needs contact
+                 creation rights. -->
+            <field name="implied_ids" eval="[Command.link(ref('base.group_partner_manager'))]"/>
         </record>
 
     </data>
