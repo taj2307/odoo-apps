@@ -1,6 +1,6 @@
 {
     'name': 'Safe Partner Merge',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'summary': 'Control who can merge contacts and block merges while '
                'draft invoices exist.',
     'description': """
@@ -29,7 +29,7 @@ wizard, nothing else about the native flow changes.
     'depends': ['account'],
     'data': [
         'security/security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/res_users_view.xml',
         'views/partner_merge_check_view.xml',
         'data/partner_merge_action.xml',

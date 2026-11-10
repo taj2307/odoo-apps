@@ -1,0 +1,2 @@
+id,name,model_id,group_id/id,operation,domain
+access_partner_merge_check_wizard_merge_user,partner.merge.check.wizard (Merge User),partner.merge.check.wizard,taj_partner_merge.group_partner_merge_user,crud,

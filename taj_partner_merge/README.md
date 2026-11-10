@@ -1,6 +1,6 @@
 # Safe Partner Merge
 
-Adds two guards in front of Odoo 19's native contact merge:
+Adds two guards in front of Odoo 20's native contact merge:
 
 1. Permission gate: only users with the "Can Merge Partners" checkbox
    (on the user form, Access Rights tab) can run the merge action.
