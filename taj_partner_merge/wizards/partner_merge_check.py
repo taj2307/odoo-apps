@@ -45,6 +45,20 @@ class PartnerMergeCheck(models.TransientModel):
     draft_invoice_details = fields.Text(string='Draft Invoice Details', readonly=True)
 
     @api.model
+    def _get_draft_moves(self, partner_ids):
+        """Draft customer/vendor invoices and refunds of these partners.
+        Read as superuser: the merge right is granted independently of
+        accounting rights, and the check must still see every draft."""
+        return self.env['account.move'].sudo().search([
+            ('partner_id', 'in', list(partner_ids)),
+            ('state', '=', 'draft'),
+            ('move_type', 'in', [
+                'out_invoice', 'out_refund',
+                'in_invoice', 'in_refund',
+            ]),
+        ])
+
+    @api.model
     def default_get(self, fields_list):
         res = super().default_get(fields_list)
         active_ids = self.env.context.get('active_ids', [])
@@ -55,14 +69,7 @@ class PartnerMergeCheck(models.TransientModel):
         partners = self.env['res.partner'].browse(active_ids)
         res['partner_ids'] = [(6, 0, active_ids)]
 
-        draft_moves = self.env['account.move'].search([
-            ('partner_id', 'in', active_ids),
-            ('state', '=', 'draft'),
-            ('move_type', 'in', [
-                'out_invoice', 'out_refund',
-                'in_invoice', 'in_refund',
-            ]),
-        ])
+        draft_moves = self._get_draft_moves(active_ids)
 
         if draft_moves:
             res['has_draft_invoices'] = True
@@ -116,3 +123,31 @@ class PartnerMergeCheck(models.TransientModel):
                 'active_model': 'res.partner',
             },
         }
+
+
+class BasePartnerMergeAutomaticWizard(models.TransientModel):
+    _inherit = 'base.partner.merge.automatic.wizard'
+
+    def _merge(self, partner_ids, dst_partner=None, extra_checks=True):
+        """Enforce the two safety rules on every merge route: the native
+        Merge action, the Safe Merge pre-check and the automatic contact
+        deduplication. Code running as superuser is left alone."""
+        if not self.env.su:
+            if not self.env.user.has_group('taj_partner_merge.group_partner_merge_user'):
+                raise UserError(_(
+                    'You do not have permission to merge partners. '
+                    'Contact your administrator.'
+                ))
+            draft_moves = self.env['partner.merge.check.wizard']._get_draft_moves(
+                partner_ids.ids if hasattr(partner_ids, 'ids') else partner_ids
+            )
+            if draft_moves:
+                names = ', '.join(sorted({
+                    '%s (%s)' % (m.name or _('Draft'), m.partner_id.display_name)
+                    for m in draft_moves
+                }))
+                raise UserError(_(
+                    'Merge blocked: these contacts have draft invoices or '
+                    'bills. Post or delete them first: %s', names
+                ))
+        return super()._merge(partner_ids, dst_partner=dst_partner, extra_checks=extra_checks)

@@ -19,6 +19,11 @@ This module adds two safety layers:
 
 When the check passes, the user continues into the standard Odoo merge
 wizard, nothing else about the native flow changes.
+
+The same two rules are enforced inside Odoo's merge itself, so they also
+apply to the native Merge action and to the automatic contact
+deduplication tool. Users start from the Safe Merge action in the
+Actions menu to see the pre-check.
 """,
     'author': 'Adedeji Toriade',
     'maintainer': 'Tajdigitals',
