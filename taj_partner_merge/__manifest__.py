@@ -1,6 +1,6 @@
 {
     'name': 'Safe Partner Merge',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Control who can merge contacts and block merges while '
                'draft invoices exist.',
     'description': """

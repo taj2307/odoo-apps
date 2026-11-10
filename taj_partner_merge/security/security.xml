@@ -5,7 +5,6 @@
         <!-- Security Group -->
         <record id="group_partner_merge_user" model="res.groups">
             <field name="name">Can Merge Partners</field>
-            <field name="category_id" ref="base.module_category_accounting_accounting"/>
             <field name="comment">Users in this group can merge duplicate partners/customers.</field>
         </record>
 

@@ -1,4 +1,4 @@
-from odoo import models, fields, api, _
+from odoo import Command, models, fields, api, _
 from odoo.exceptions import UserError
 
 
@@ -18,7 +18,7 @@ class ResUsers(models.Model):
         )
         for user in self:
             user.can_merge_partners = (
-                merge_group in user.groups_id if merge_group else False
+                merge_group in user.group_ids if merge_group else False
             )
 
     def _inverse_can_merge_partners(self):
@@ -30,9 +30,9 @@ class ResUsers(models.Model):
             return
         for user in self:
             if user.can_merge_partners:
-                user.sudo().write({'groups_id': [(4, merge_group.id)]})
+                user.sudo().write({'group_ids': [Command.link(merge_group.id)]})
             else:
-                user.sudo().write({'groups_id': [(3, merge_group.id)]})
+                user.sudo().write({'group_ids': [Command.unlink(merge_group.id)]})
 
 
 class PartnerMergeCheck(models.TransientModel):
